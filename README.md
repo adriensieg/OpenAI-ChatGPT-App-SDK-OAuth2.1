@@ -9,6 +9,7 @@ It's built on Model Context Protocol (**MCP**), which defines **how ChatGPT comm
     - [Concepts Represented in Flow]()
     - [Mermaid Flow]()
 - [Use Cases](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#use-cases)
+- [Explain me the code]()
 
 ## What OAuth means in the ChatGPT Apps SDKs settings?
 
@@ -20,11 +21,18 @@ The **OAuth flow** authenticates ChatGPT (the client) to our MCP service. It doe
 OAuth by itself does **not identify a user**; it just delegates authoization. 
     - In *traditional web apps*, you often combine **OAuth + OpenID Connect** (OIDC) to both authenticate and authorize users.
     - In the *ChatGPT SDK integration*, **only OAuth 2.0 is used** — not OIDC. So there's **no user identity payload** (no `ID token`, **no claims about the user**).
-
+    
 #### Conclusion:
 - We're authorizing ChatGPT to access your service.
 - We're not authenticating ChatGPT users individually.
 - Our app sees a single client (ChatGPT), not multiple end-users
+
+## What's the point of using OAuth at all?
+- If our 0Auth server (your IdP) only allows known users or service accounts to complete the Auth flow, then yes — ChatGPT must be registered as a known client or user there.
+If you configure it to allow any Auth client (e.g. a public client credential), then anyone using ChatGPT can connect — but again, you'll still only see "ChatGPT" as the authorized actor, not each user.
+So the flow doesn't expose or require per-user registration unless you build your own identity layer on top.
+
+
 
 ## Step-by-step flow of how your OAuth-protected FastMCP server works with ChatGPT and Auth0
 
@@ -129,6 +137,8 @@ Linkedin Post:
 - Waiting Time
 - Food intent
 - Ordering - Stripe Payment
+
+## Explain me the code
 
 ##### Endpoints to create
 - Authorization endpoint (`/authorize`)
