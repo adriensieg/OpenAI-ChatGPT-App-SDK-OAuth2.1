@@ -5,8 +5,8 @@ It's built on Model Context Protocol (**MCP**), which defines **how ChatGPT comm
 
 A step-by-step flow of how your OAuth-protected FastMCP server works with ChatGPT and Auth0
 
-- What OAuth means in the ChatGPT Apps SDKs settings?
-- What's the point of using OAuth at all?
+- [What OAuth means in the ChatGPT Apps SDKs settings?]()
+- [What's the point of using OAuth at all?]()
 
 ## What OAuth means in the ChatGPT Apps SDKs settings?
 
