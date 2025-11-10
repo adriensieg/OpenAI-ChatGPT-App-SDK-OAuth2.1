@@ -37,6 +37,10 @@ OAuth by itself does **not identify a user**; it just delegates authoization.
 
 ## Step-by-step flow of how your OAuth-protected FastMCP server works with ChatGPT and Auth0
 
+The Apps SDK makes use of familiar web standards like OAuth 2.1 and OIDC. 
+
+- **ChatGPT** acts as the **OAuth public client** *on behalf of the user*, while **our backend** serves as the **protected resource**, and an **identity layer** (Auth0) handles <mark>**client registration**</mark>, <mark>**consent**</mark>, and <mark>**token management**</mark>.
+
 #### Concepts Represented in Flow
 
 | Concept                                | Description                                                                                                        |
@@ -119,9 +123,52 @@ sequenceDiagram
 
 ```
 
+## Next steps: 
+
+Client registration
+The MCP spec currently requires dynamic client registration (DCR). This means that each time ChatGPT connects, it registers a fresh OAuth client with your authorization server, obtains a unique client_id, and uses that identity during token exchange. The downside of this approach is that it can generate thousands of short-lived clients—often one per user session.
+
+To address this issue, the MCP council is currently advancing **Client Metadata Documents (CMID)**. 
+
+In the CMID model, ChatGPT will publish a stable document (for example https://openai.com/chatgpt.json) that declares its OAuth metadata and identity. Your authorization server can fetch the document over HTTPS, pin it as the canonical client record, and enforce policies such as redirect URI allowlists or rate limits without relying on per-session registration. CMID is still in draft, so continue supporting DCR until CIMD has landed.
+
 ## Use Cases
 Linkedin Post: 
 - Geofencing
 - Waiting Time
 - Food intent
 - Ordering - Stripe Payment
+
+
+## Bibliography
+
+- **Authentication patterns for Apps SDK apps**
+    - https://developers.openai.com/apps-sdk/build/auth
+    - https://stytch.com/blog/guide-to-authentication-for-the-openai-apps-sdk/ 
+
+- **OpenAI Apps SDK: Build Native Apps Inside ChatGPT**
+    - https://www.premieroctet.com/blog/en/openai-apps-sdk-build-native-apps-inside-chatgpt 
+
+- **Build Your First ChatGPT App: Fantasy Premier League AI Assistant (Apps SDK Tutorial)**
+    - https://www.youtube.com/watch?app=desktop&v=SZNWsaVFaJA
+    - https://github.com/hollaugo/tutorials/tree/main/fpl-deepagent 
+
+- **Using Stytch for Remote MCP Server authorization**
+    - https://stytch.com/docs/guides/connected-apps/mcp-server-overview
+
+- **Demo pizza app**
+    - https://www.linkedin.com/posts/andrew-hoh_openai-announced-the-apps-sdk-for-building-activity-7382840860943523840-L0dM?utm_source=share&utm_medium=member_desktop&rcm=ACoAABNopi8BX8O0PNFj-q_e1kL3mqJvQaqy9jM 
+
+- **Dynamic Application Registration**
+    - https://www.descope.com/learn/post/dynamic-client-registration
+
+- **Tips to Harden OAuth Dynamic Client Registration in MCP Servers**
+    - https://www.descope.com/blog/post/dcr-hardening-mcp
+      
+- **How to register and manage OAuth2 clients?**
+    - https://sagarag.medium.com/how-to-register-and-manage-oauth2-clients-896e553b7cf1
+      
+- **ChatGPT App SDK & MCP Developer Mode MCP - Complete Tutorial**
+    - https://gist.github.com/ruvnet/7b6843c457822cbcf42fc4aa635eadbb#file-dev-mode-md
+    - https://gadget.dev/blog/everything-you-need-to-know-about-building-chatgpt-apps
+    - https://github.com/ComposioHQ/awesome-openai-apps-sdk-examples/tree/master/python
