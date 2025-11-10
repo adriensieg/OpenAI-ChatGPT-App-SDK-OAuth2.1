@@ -1,4 +1,4 @@
-# OpenAI-ChatGPT-App-SDK-OAuth2.1
+# Create an App into ChatGPT App SDK
 Authorization architecture for Chagpt App SDK
 
 ```mermaid
