@@ -7,7 +7,7 @@ A step-by-step flow of how your OAuth-protected FastMCP server works with ChatGP
 
 - [What OAuth means in the ChatGPT Apps SDKs settings?](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#what-oauth-means-in-the-chatgpt-apps-sdks-settings)
 - [What's the point of using OAuth at all?]()
-- [Step-by-step flow of how your OAuth-protected FastMCP server works with ChatGPT and Auth0]()
+- [Step-by-step flow of how your OAuth-protected FastMCP server works with ChatGPT and Auth0](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/tree/master?tab=readme-ov-file#step-by-step-flow-of-how-your-oauth-protected-fastmcp-server-works-with-chatgpt-and-auth0)
 - [Use Cases](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#use-cases)
 
 ## What OAuth means in the ChatGPT Apps SDKs settings?
