@@ -1,9 +1,7 @@
-# How to create an App into ChatGPT App SDK
+# How to create an App into ChatGPT App SDK?
 
 The **new OpenAl Apps SDK** lets developers **bring their products directly into ChatGPT** with <mark>**custom Ul components**</mark>, <mark>**API access**</mark>, and <mark>**user context**</mark> that can persist across chats. 
 It's built on Model Context Protocol (**MCP**), which defines **how ChatGPT communicates with our app through** <mark>**tools**</mark>, <mark>**resources**</mark>, and <mark>**structured data**</mark>.
-
-A step-by-step flow of how your OAuth-protected FastMCP server works with ChatGPT and Auth0
 
 - [What OAuth means in the ChatGPT Apps SDKs settings?](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#what-oauth-means-in-the-chatgpt-apps-sdks-settings)
 - [What's the point of using OAuth at all?]()
@@ -27,13 +25,6 @@ OAuth by itself does **not identify a user**; it just delegates authoization.
 - We're authorizing ChatGPT to access your service.
 - We're not authenticating ChatGPT users individually.
 - Our app sees a single client (ChatGPT), not multiple end-users
-
-### Endpoints to create
-- Authorization endpoint (`/authorize`)
-- Token endpoint (`/oauth/token`)
-- JWKS endpoint (`/.well-known/jwks.json`)
-- Registration endpoint (`/oidc/register`) if DCR is enabled
-- OIDC discovery (`/.well-known/openid-configuration`)
 
 ## Step-by-step flow of how your OAuth-protected FastMCP server works with ChatGPT and Auth0
 
@@ -138,6 +129,13 @@ Linkedin Post:
 - Waiting Time
 - Food intent
 - Ordering - Stripe Payment
+
+##### Endpoints to create
+- Authorization endpoint (`/authorize`)
+- Token endpoint (`/oauth/token`)
+- JWKS endpoint (`/.well-known/jwks.json`)
+- Registration endpoint (`/oidc/register`) if DCR is enabled
+- OIDC discovery (`/.well-known/openid-configuration`)
 
 
 ## Bibliography
