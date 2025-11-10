@@ -1,4 +1,4 @@
-# Create an App into ChatGPT App SDK
+# How to create an App into ChatGPT App SDK
 Authorization architecture for Chagpt App SDK
 
 ```mermaid
