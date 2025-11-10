@@ -1,7 +1,34 @@
 # How to create an App into ChatGPT App SDK
-Authorization architecture for Chagpt App SDK
+
+The **new OpenAl Apps SDK** lets developers **bring their products directly into ChatGPT** with <mark>**custom Ul components**</mark>, <mark>**API access**</mark>, and <mark>**user context**</mark> that can persist across chats. 
+It's built on Model Context Protocol (**MCP**), which defines **how ChatGPT communicates with our app through** <mark>**tools**</mark>, <mark>**resources**</mark>, and <mark>**structured data**</mark>.
 
 A step-by-step flow of how your OAuth-protected FastMCP server works with ChatGPT and Auth0
+
+- What OAuth means in the ChatGPT Apps SDKs settings?
+- What's the point of using OAuth at all?
+
+## What OAuth means in the ChatGPT Apps SDKs settings?
+
+When ChatGPT gives us the option between **"No Authentication"** and **"OAuth"**, it's referring to *how ChatGPT authenticates itself to our service, ~~not how our end users authenticate to us~~
+- **No Authentication**:ChatGPT makes unauthetnicated request to our endpoint
+- **OAuth**: ChatGPT will perform an OAuth 2.1 **Client credentials** or **Authorization Code** to obtain an Access token that it will include in requests to our MCP endpoint. \
+
+The **OAuth flow** authenticates ChatGPT (the client) to our MCP service. It does not ~~authenticate~~ or ~~identify the individual human~~ ChatGPT user to us. We won't **receive any user identity** info unless OpenAI explictly passes it. 
+OAuth by itself does **not identify a user**; it just delegates authoization. 
+    - In *traditional web apps*, you often combine **OAuth + OpenID Connect** (OIDC) to both authenticate and authorize users.
+    - In the *ChatGPT SDK integration*, **only OAuth 2.0 is used** — not OIDC. So there's **no user identity payload** (no `ID token`, **no claims about the user**).
+
+#### Conclusion:
+- We're authorizing ChatGPT to access your service.
+- We're not authenticating ChatGPT users individually.
+- Our app sees a single client (ChatGPT), not multiple end-users
+
+Linkedin Post: 
+- Geofencing
+- Waiting Time
+- Food intent
+- Ordering - Stripe Payment
 
 ```mermaid
 sequenceDiagram
