@@ -5,8 +5,10 @@ It's built on Model Context Protocol (**MCP**), which defines **how ChatGPT comm
 
 A step-by-step flow of how your OAuth-protected FastMCP server works with ChatGPT and Auth0
 
-- [What OAuth means in the ChatGPT Apps SDKs settings?]()
+- [What OAuth means in the ChatGPT Apps SDKs settings?](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#what-oauth-means-in-the-chatgpt-apps-sdks-settings)
 - [What's the point of using OAuth at all?]()
+- [Step-by-step flow of how your OAuth-protected FastMCP server works with ChatGPT and Auth0]()
+- [Use Cases]()
 
 ## What OAuth means in the ChatGPT Apps SDKs settings?
 
@@ -24,12 +26,7 @@ OAuth by itself does **not identify a user**; it just delegates authoization.
 - We're not authenticating ChatGPT users individually.
 - Our app sees a single client (ChatGPT), not multiple end-users
 
-Linkedin Post: 
-- Geofencing
-- Waiting Time
-- Food intent
-- Ordering - Stripe Payment
-
+## Step-by-step flow of how your OAuth-protected FastMCP server works with ChatGPT and Auth0
 ```mermaid
 sequenceDiagram
     autonumber
@@ -93,3 +90,11 @@ sequenceDiagram
     Note over C,M: New token used in next Authorization header
 
 ```
+
+
+## Use Cases
+Linkedin Post: 
+- Geofencing
+- Waiting Time
+- Food intent
+- Ordering - Stripe Payment
