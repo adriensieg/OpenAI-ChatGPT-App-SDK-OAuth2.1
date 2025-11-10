@@ -1,6 +1,8 @@
 # How to create an App into ChatGPT App SDK
 Authorization architecture for Chagpt App SDK
 
+A step-by-step flow of how your OAuth-protected FastMCP server works with ChatGPT and Auth0
+
 ```mermaid
 sequenceDiagram
     autonumber
