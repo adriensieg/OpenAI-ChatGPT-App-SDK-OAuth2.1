@@ -3,6 +3,10 @@
 The **new OpenAl Apps SDK** lets developers **bring their products directly into ChatGPT** with <mark>**custom Ul components**</mark>, <mark>**API access**</mark>, and <mark>**user context**</mark> that can persist across chats. 
 It's built on Model Context Protocol (**MCP**), which defines **how ChatGPT communicates with our app through** <mark>**tools**</mark>, <mark>**resources**</mark>, and <mark>**structured data**</mark>.
 
+High level architecture
+
+Resource discovery → AS discovery → DCR → PKCE auth code flow → JWT issuance → JWKS-based verification → SSE/MCP tool execution → token refresh
+
 - [What OAuth means in the ChatGPT Apps SDKs settings?](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#what-oauth-means-in-the-chatgpt-apps-sdks-settings)
 - [What's the point of using OAuth at all?]()
 - [Step-by-step flow of how your OAuth-protected FastMCP server works with ChatGPT and Auth0](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/tree/master?tab=readme-ov-file#step-by-step-flow-of-how-your-oauth-protected-fastmcp-server-works-with-chatgpt-and-auth0)
@@ -31,8 +35,6 @@ OAuth by itself does **not identify a user**; it just delegates authoization.
 - If our 0Auth server (your IdP) only allows known users or service accounts to complete the Auth flow, then yes — ChatGPT must be registered as a known client or user there.
 If you configure it to allow any Auth client (e.g. a public client credential), then anyone using ChatGPT can connect — but again, you'll still only see "ChatGPT" as the authorized actor, not each user.
 So the flow doesn't expose or require per-user registration unless you build your own identity layer on top.
-
-
 
 ## Step-by-step flow of how your OAuth-protected FastMCP server works with ChatGPT and Auth0
 
@@ -140,7 +142,244 @@ Linkedin Post:
 
 ## Explain me the code
 
+#### 1. Setup / Static configuration (one-time)
 
+<ins>*In Auth0*</ins>
+- Created an **Auth0 tenant**.
+- Configured an **API (resource)** in Auth0 with **Identifier** (**audience**) = `AUTH0_AUDIENCE`.
+- Enabled **DCR (Dynamic Client Registration)** for Auth0.
+- Deployed our MCP server to Cloud Run at `MCP_SERVER_URL`.
+
+<ins>*In ChatGPT’s Apps & connectors*</ins>:
+- Configured our **connector** with OAuth
+
+Our .env:
+```
+AUTH0_DOMAIN=dev-rcc43qlv8opam0co.us.auth0.com
+AUTH0_AUDIENCE=https://fastmcp-hello-world-311449345351.us-central1.run.app
+MCP_SERVER_URL=https://fastmcp-hello-world-311449345351.us-central1.run.app
+PORT=8080
+```
+
+#### 2. Discovery – Resource metadata
+<mark>**Goal**: ChatGPT needs to know **who** can issue tokens* for our resource and **what** *scopes to request*</mark>
+
+- ChatGPT does GET:
+```
+GET https://fastmcp-hello-world-311449345351.us-central1.run.app/.well-known/oauth-protected-resource
+```
+
+Our `oauth_discovery()` handler returns:
+
+```
+{
+  "resource": "https://fastmcp-hello-world-311449345351.us-central1.run.app",
+  "authorization_servers": ["https://dev-rcc43qlv8opam0co.us.auth0.com"],
+  "scopes_supported": [
+    "openid",
+    "profile",
+    "email",
+    "offline_access",
+    "mcp:read",
+    "mcp:execute",
+    "mcp:clients"
+  ],
+  "bearer_methods_supported": ["header"]
+}
+```
+
+From this, <ins>ChatGPT learns</ins>:
+- The **resource identifier** (matches audience in tokens).
+- The **Auth0 domain** is the **authorization server**.
+- It should send **tokens** via **Authorization header**.
+- What **scopes** it is allowed to ask for.
+
+#### 3. Discovery – Authorization server metadata + DCR
+<mark>**Goal**: Now ChatGPT needs to learn **Auth0’s full capabilities** and **register as a client**.</mark>
+
+1. ChatGPT **queries the authorization server’s metadata** (usually via Auth0’s own `/.well-known/openid-configuration` or `/.well-known/oauth-authorization-server`).
+   - `authorization_server_metadata()`
+   - `openid_configuration()`
+
+*For example*, OIDC discovery:
+
+{
+  "issuer": "https://dev-rcc43qlv8opam0co.us.auth0.com",
+  "authorization_endpoint": "https://dev-rcc43qlv8opam0co.us.auth0.com/authorize",
+  "token_endpoint": "https://dev-rcc43qlv8opam0co.us.auth0.com/oauth/token",
+  "jwks_uri": "https://dev-rcc43qlv8opam0co.us.auth0.com/.well-known/jwks.json",
+  "registration_endpoint": "https://dev-rcc43qlv8opam0co.us.auth0.com/oidc/register",
+  "response_types_supported": ["code", ...],
+  "grant_types_supported": ["authorization_code", "refresh_token"],
+  "scopes_supported": ["openid", "profile", "email", "mcp:read", "mcp:execute"],
+  "code_challenge_methods_supported": ["S256"],
+  "token_endpoint_auth_methods_supported": [
+    "client_secret_basic",
+    "client_secret_post",
+    "none"
+  ],
+  ...
+}
+
+2. **Dynamic Client Registration** (DCR)
+    - ChatGPT sends something like:
+```
+POST https://dev-rcc43qlv8opam0co.us.auth0.com/oidc/register
+Content-Type: application/json
+
+{
+  "redirect_uris": ["https://chat.openai.com/callback/..."],
+  "grant_types": ["authorization_code", "refresh_token"],
+  "response_types": ["code"],
+  "token_endpoint_auth_method": "none",
+  "application_type": "web",
+  "client_name": "ChatGPT <Your MCP Connector Name>",
+  "scope": "openid profile email offline_access mcp:execute mcp:read"
+}
+```
+
+Auth0 returns:
+
+{
+  "client_id": "some-generated-id",
+  "client_secret": null,
+  "token_endpoint_auth_method": "none",
+  "redirect_uris": [...],
+  ...
+}
+
+3. ChatGPT stores this `client_id` and uses it for all **future authorization requests** for that connector.
+
+#### 4. Authorization Code flow with PKCE (user connects our app)
+
+Now a user in ChatGPT clicks “Connect” to our app.
+    
+1. ChatGPT prepares **PKCE**:
+    - Generate `code_verifier` (random 43–128 chars).
+    - Compute `code_challenge = BASE64URL(SHA256(code_verifier))`.
+
+2. ChatGPT opens the browser to **Auth0’s authorization endpoint**:
+
+```
+GET https://dev-rcc43qlv8opam0co.us.auth0.com/authorize
+    ?response_type=code
+    &client_id=<client_id from DCR>
+    &redirect_uri=https://chat.openai.com/.../oauth/callback
+    &scope=openid profile email offline_access mcp:execute mcp:read
+    &audience=https://fastmcp-hello-world-311449345351.us-central1.run.app
+    &state=<random-state>
+    &nonce=<random-nonce>
+    &code_challenge=<pkce-challenge>
+    &code_challenge_method=S256
+```
+
+3. User **login** + **consent**
+    - Auth0 displays **login page**.
+    - User **authenticates** (password, social, etc.).
+    - Auth0 shows **consent** for requested scopes/audience.
+
+4. Redirect back to ChatGPT. If user approves, Auth0 redirects to:
+
+```
+GET https://chat.openai.com/.../oauth/callback
+    ?code=<authorization_code>
+    &state=<same-state>
+```
+
+5. **Token exchange** - ChatGPT sends `POST` to **token endpoint**:
+```
+POST https://dev-rcc43qlv8opam0co.us.auth0.com/oauth/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code&
+    client_id=<client_id>&
+    code=<authorization_code>&
+    redirect_uri=https://chat.openai.com/.../oauth/callback&
+    code_verifier=<original-pkce-code-verifier>
+```
+
+- Auth0 **verifies**:
+    - `code` is valid, unexpired, bound to this client + redirect URI
+    - `code_verifier` -> code_challenge
+    - `audience` (in original auth request) matches configured API
+- and then Auth0 **issues**:
+```
+{
+  "access_token": "<access-token-jwt>",
+  "refresh_token": "<optional-refresh-token>",
+  "id_token": "<id-token-jwt>",
+  "token_type": "Bearer",
+  "expires_in": 3600
+}
+```
+
+6. **ChatGPT stores tokens for this user + connector**.
+
+From now on, ChatGPT can **call our MCP server with Authorization**: `Bearer <access_token>` until it expires, then use `refresh tokens` or re-do the flow.
+
+#### 5. Calling your MCP tools over SSE
+
+User types something like: “Use my Hello MCP app to say hi to Adrien.”
+
+1. ChatGPT opens or reuses an SSE connection to our MCP endpoint:
+```
+GET https://fastmcp-hello-world-311449345351.us-central1.run.app/sse
+Authorization: Bearer <access_token>
+Accept: text/event-stream
+```
+
+2. Our FastMCP runtime recognizes a new transport session and starts the MCP protocol over SSE.
+3. ChatGPT sends a tool call event:
+
+```
+{
+  "type": "tool_call",
+  "tool": "hello",
+  "arguments": { "name": "Alice" }
+}
+```
+
+4. Our server:
+    - Should **validate the access token** via our **middleware** (`extract_and_validate_token`/`validate_token`).
+    - If token valid and scopes sufficient (`mcp:execute`), proceed.
+    - FastMCP calls our Python function:
+
+```
+hello(name="Adrien")  # -> "Hello, Adrien from W9010MNCPX!"
+```
+
+- Our server sends back an **SSE event**:
+```
+{
+  "type": "tool_result",
+  "tool": "hello",
+  "result": "Hello, Adrien from W9010MNCPX!"
+}
+```
+ChatGPT uses that to continue its reasoning and respond to the user.
+
+#### 6.Token expiration and re-authorization
+
+If access token expired / invalid:
+- Our middleware detects that (`validate_token` fails, or `exp` in the past).
+- Our endpoint responds:
+  
+```
+HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Bearer realm="mcp-server",
+                  authorization_uri="https://dev-rcc43qlv8opam0co.us.auth0.com/authorize",
+                  error="invalid_token"
+Content-Type: application/json
+
+{
+  "error": "unauthorized",
+  "error_description": "Invalid or missing access token"
+}
+```
+
+- ChatGPT sees the `401` with `WWW-Authenticate` and knows it must re-authenticate:
+    - Possibly using refresh token.
+    - Or by re-running the authorization code flow with user if needed.
 
 ##### Endpoints to create
 - Authorization endpoint (`/authorize`)
