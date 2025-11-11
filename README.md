@@ -9,7 +9,7 @@ It's built on Model Context Protocol (**MCP**), which defines **how ChatGPT comm
     - [Concepts Represented in Flow]()
     - [Mermaid Flow]()
 - [Use Cases](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#use-cases)
-- [Explain me the code]()
+- [Explain me the code](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/tree/master?tab=readme-ov-file#explain-me-the-code)
 
 ## What OAuth means in the ChatGPT Apps SDKs settings?
 
@@ -139,6 +139,8 @@ Linkedin Post:
 - Ordering - Stripe Payment
 
 ## Explain me the code
+
+
 
 ##### Endpoints to create
 - Authorization endpoint (`/authorize`)
