@@ -13,7 +13,7 @@ Resource discovery → AS discovery → DCR → PKCE auth code flow → JWT issu
     - [Concepts Represented in Flow]()
     - [Mermaid Flow]()
 - [Use Cases](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#use-cases)
-- [Explain me the code](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/tree/master?tab=readme-ov-file#explain-me-the-code)
+- [Explain me the flow](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/tree/master?tab=readme-ov-file#explain-me-the-code)
 
 ## What OAuth means in the ChatGPT Apps SDKs settings?
 
