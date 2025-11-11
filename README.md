@@ -140,9 +140,9 @@ Linkedin Post:
 - Food intent
 - Ordering - Stripe Payment
 
-## Explain me the code
+## Explain me the flow
 
-#### 1. Setup / Static configuration (one-time)
+### 1. Setup / Static configuration (one-time)
 
 <ins>*In Auth0*</ins>
 - Created an **Auth0 tenant**.
@@ -161,7 +161,7 @@ MCP_SERVER_URL=https://fastmcp-hello-world-311449345351.us-central1.run.app
 PORT=8080
 ```
 
-#### 2. Discovery – Resource metadata
+### 2. Discovery – Resource metadata
 <mark>**Goal**: ChatGPT needs to know **who** can issue tokens* for our resource and **what** *scopes to request*</mark>
 
 - ChatGPT does GET:
@@ -194,7 +194,7 @@ From this, <ins>ChatGPT learns</ins>:
 - It should send **tokens** via **Authorization header**.
 - What **scopes** it is allowed to ask for.
 
-#### 3. Discovery – Authorization server metadata + DCR
+### 3. Discovery – Authorization server metadata + DCR
 <mark>**Goal**: Now ChatGPT needs to learn **Auth0’s full capabilities** and **register as a client**.</mark>
 
 1. ChatGPT **queries the authorization server’s metadata** (usually via Auth0’s own `/.well-known/openid-configuration` or `/.well-known/oauth-authorization-server`).
@@ -250,7 +250,7 @@ Auth0 returns:
 
 3. ChatGPT stores this `client_id` and uses it for all **future authorization requests** for that connector.
 
-#### 4. Authorization Code flow with PKCE (user connects our app)
+### 4. Authorization Code flow with PKCE (user connects our app)
 
 Now a user in ChatGPT clicks “Connect” to our app.
     
@@ -317,7 +317,7 @@ grant_type=authorization_code&
 
 From now on, ChatGPT can **call our MCP server with Authorization**: `Bearer <access_token>` until it expires, then use `refresh tokens` or re-do the flow.
 
-#### 5. Calling your MCP tools over SSE
+### 5. Calling your MCP tools over SSE
 
 User types something like: “Use my Hello MCP app to say hi to Adrien.”
 
@@ -358,7 +358,7 @@ hello(name="Adrien")  # -> "Hello, Adrien from W9010MNCPX!"
 ```
 ChatGPT uses that to continue its reasoning and respond to the user.
 
-#### 6.Token expiration and re-authorization
+### 6.Token expiration and re-authorization
 
 If access token expired / invalid:
 - Our middleware detects that (`validate_token` fails, or `exp` in the past).
