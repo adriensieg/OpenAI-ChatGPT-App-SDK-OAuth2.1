@@ -3,13 +3,9 @@
 The **new OpenAl Apps SDK** lets developers **bring their products directly into ChatGPT** with <mark>**custom Ul components**</mark>, <mark>**API access**</mark>, and <mark>**user context**</mark> that can persist across chats. 
 It's built on Model Context Protocol (**MCP**), which defines **how ChatGPT communicates with our app through** <mark>**tools**</mark>, <mark>**resources**</mark>, and <mark>**structured data**</mark>.
 
-- [What OAuth means in the ChatGPT Apps SDKs settings?](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#what-oauth-means-in-the-chatgpt-apps-sdks-settings)
-- [What's the point of using OAuth at all?]()
-- [Step-by-step flow of how your OAuth-protected FastMCP server works with ChatGPT and Auth0](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/tree/master?tab=readme-ov-file#step-by-step-flow-of-how-your-oauth-protected-fastmcp-server-works-with-chatgpt-and-auth0)
-    - [Concepts Represented in Flow]()
-    - [Mermaid Flow]()
-- [Use Cases](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#use-cases)
 - [Explain me the flow](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/tree/master?tab=readme-ov-file#explain-me-the-code)
+- [Show me the flow]()
+- [Use Cases](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#use-cases)
 
 ## Explain me the flow
 
@@ -33,7 +29,7 @@ PORT=8080
 ```
 
 ### 2. Discovery – Resource metadata
-<mark>**Goal**: ChatGPT needs to know **who** can issue tokens* for our resource and **what** *scopes to request*</mark>
+<mark>**Goal**: ChatGPT needs to know **who** can *issue tokens* for our resource and **what** *scopes to request*</mark>
 
 - ChatGPT does GET:
 ```
@@ -41,7 +37,6 @@ GET https://fastmcp-hello-world-311449345351.us-central1.run.app/.well-known/oau
 ```
 
 Our `oauth_discovery()` handler returns:
-
 ```
 {
   "resource": "https://fastmcp-hello-world-311449345351.us-central1.run.app",
