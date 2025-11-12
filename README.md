@@ -9,12 +9,12 @@ First - you need to understand the [OAuth flow](https://sagarag.medium.com/how-d
 - [**Show me the flow**](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#show-me-the-flow)
   - [Concepts Represented in Flow](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#concepts-represented-in-flow)
 - [**Explain me the code**](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#explain-me-the-code)
-  - [Layout of the project]()
-  - [`config.py` – central Auth0 / OAuth configuration]()
-  - [`discovery.py` – discovery endpoints]()
+  - [Layout of the project](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#layout-of-the-project)
+  - [`config.py` – central Auth0 / OAuth configuration](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#configpy--central-auth0--oauth-configuration)
+  - [`discovery.py` – discovery endpoints](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#discoverypy--discovery-endpoints)
   - [`middleware.py` – token validation and auth enforcement]()
   - [`main.py` – FastMCP server, tools, and basic routes]()
-  - 
+
 - [**Bibliography**](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#bibliography)
 
 ## Explain me the flow
