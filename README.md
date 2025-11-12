@@ -9,6 +9,12 @@ First - you need to understand the [OAuth flow](https://sagarag.medium.com/how-d
 - [**Show me the flow**](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#show-me-the-flow)
   - [Concepts Represented in Flow](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#concepts-represented-in-flow)
 - [**Explain me the code**](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#explain-me-the-code)
+  - [Layout of the project]()
+  - [`config.py` – central Auth0 / OAuth configuration]()
+  - [`discovery.py` – discovery endpoints]()
+  - [`middleware.py` – token validation and auth enforcement]()
+  - [`main.py` – FastMCP server, tools, and basic routes]()
+  - 
 - [**Bibliography**](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#bibliography)
 
 ## Explain me the flow
@@ -338,6 +344,62 @@ sequenceDiagram
 
 ## Explain me the code
 
+### Layout of the project
+
+```
+authorized-fastmcp-hello-world/
+├── main.py                        # Entrypoint – FastMCP app setup and routes
+├── requirements.txt               # Python dependencies
+├── .env                           # Environment variables (Auth0 + MCP server)
+├── Dockerfile                     # Build config for Cloud Run deployment
+├── README.md                      # Documentation (OAuth flow, setup, etc.)
+│
+├── auth/                          # Authentication / OAuth2 middleware package
+│   ├── __init__.py                # Package exports (Auth0Config, middleware, discovery)
+│   ├── config.py                  # Loads Auth0 env vars, defines endpoints & helper props
+│   ├── middleware.py              # JWT validation, scope checking, oauth_required decorator
+└   └── discovery.py               # .well-known endpoints (OAuth resource, OIDC, DCR metadata)
+```
+
+### `config.py` – central Auth0 / OAuth configuration
+
+`Auth0Config` wraps our environment variables and computes all key URLs
+
+```python
+class Auth0Config(BaseSettings):
+    AUTH0_DOMAIN: str
+    AUTH0_AUDIENCE: str
+    MCP_SERVER_URL: str
+    PORT: int = 8080
+    AUTH0_ISSUER: Optional[str] = None
+    JWT_ALGORITHMS: list[str] = ["RS256"]
+
+    @property
+    def issuer(self) -> str:
+        return self.AUTH0_ISSUER.rstrip('/') if self.AUTH0_ISSUER else f"https://{self.AUTH0_DOMAIN}"
+
+    @property
+    def jwks_uri(self) -> str:
+        return f"https://{self.AUTH0_DOMAIN}/.well-known/jwks.json"
+
+    @property
+    def authorization_endpoint(self) -> str:
+        return f"https://{self.AUTH0_DOMAIN}/authorize"
+
+    @property
+    def token_endpoint(self) -> str:
+        return f"https://{self.AUTH0_DOMAIN}/oauth/token"
+
+    @property
+    def registration_endpoint(self) -> str:
+        return f"https://{self.AUTH0_DOMAIN}/oidc/register"
+```
+
+<ins>Conceptually</ins>:
+- Defines the **issuer**, **jwks_uri**, **authorization_endpoint**, **token_endpoint**, **registration_endpoint** —the core metadata ChatGPT (and our server) needs.
+- `AUTH0_AUDIENCE` ties to aud in JWT and to Auth0 “API” configuration.
+
+### `discovery.py` – discovery endpoints
 
 ##### Endpoints to create
 - Authorization endpoint (`/authorize`)
