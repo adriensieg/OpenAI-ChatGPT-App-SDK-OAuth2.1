@@ -241,7 +241,7 @@ Content-Type: application/json
 ```
 
 Auth0 returns:
-
+```
 {
   "client_id": "some-generated-id",
   "client_secret": null,
@@ -249,7 +249,7 @@ Auth0 returns:
   "redirect_uris": [...],
   ...
 }
-
+```
 3. ChatGPT stores this `client_id` and uses it for all **future authorization requests** for that connector.
 
 ### 4. Authorization Code flow with PKCE (user connects our app)
