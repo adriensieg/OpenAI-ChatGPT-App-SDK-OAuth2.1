@@ -202,6 +202,7 @@ From this, <ins>ChatGPT learns</ins>:
    - `openid_configuration()`
 
 *For example*, OIDC discovery:
+```
 
 {
   "issuer": "https://dev-rcc43qlv8opam0co.us.auth0.com",
@@ -220,6 +221,7 @@ From this, <ins>ChatGPT learns</ins>:
   ],
   ...
 }
+```
 
 2. **Dynamic Client Registration** (DCR)
     - ChatGPT sends something like:
