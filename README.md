@@ -8,6 +8,7 @@ First - you need to understand the [OAuth flow](https://sagarag.medium.com/how-d
 - [**Explain me the flow**](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/tree/master?tab=readme-ov-file#explain-me-the-code)
 - [**Show me the flow**](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#show-me-the-flow)
   - [Concepts Represented in Flow](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#concepts-represented-in-flow)
+- [**Explain me the code**]
 - [**Bibliography**](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#bibliography)
 
 ## Explain me the flow
@@ -317,8 +318,6 @@ sequenceDiagram
     Note over C,M: New token used in next Authorization header
 
 ```
- 
-
 #### Concepts Represented in Flow
 
 | Concept                                | Description                                                                                                        |
@@ -336,6 +335,8 @@ sequenceDiagram
 | **SSE (Server-Sent Events)**           | Long-lived HTTP stream used by FastMCP for bi-directional ChatGPT ↔ MCP communication.                             |
 | **Access Token Validation**            | Your middleware verifies JWT signature, audience, issuer, expiration, and scopes.                                  |
 | **Refresh Tokens**                     | Long-lived tokens allowing ChatGPT to renew access tokens without user re-login (requires `offline_access` scope). |
+
+## Explain me the code
 
 
 ##### Endpoints to create
