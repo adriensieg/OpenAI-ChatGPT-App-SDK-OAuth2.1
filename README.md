@@ -3,9 +3,11 @@
 The **new OpenAl Apps SDK** lets developers **bring their products directly into ChatGPT** with <mark>**custom Ul components**</mark>, <mark>**API access**</mark>, and <mark>**user context**</mark> that can persist across chats. 
 It's built on Model Context Protocol (**MCP**), which defines **how ChatGPT communicates with our app through** <mark>**tools**</mark>, <mark>**resources**</mark>, and <mark>**structured data**</mark>.
 
-- [Explain me the flow](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/tree/master?tab=readme-ov-file#explain-me-the-code)
-- [Show me the flow]()
-- [Use Cases](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/blob/master/README.md#use-cases)
+First - you need to understand the [OAuth flow](https://sagarag.medium.com/how-do-you-discover-the-oauth2-server-configuration-d42d30ad5b9d)
+
+- [**Explain me the flow**](https://github.com/adriensieg/OpenAI-ChatGPT-App-SDK-OAuth2.1/tree/master?tab=readme-ov-file#explain-me-the-code)
+- [**Show me the flow**]()
+  - [**Concepts Represented in Flow**]()
 
 ## Explain me the flow
 
@@ -341,15 +343,6 @@ sequenceDiagram
 - JWKS endpoint (`/.well-known/jwks.json`)
 - Registration endpoint (`/oidc/register`) if DCR is enabled
 - OIDC discovery (`/.well-known/openid-configuration`)
-
-## Next steps: 
-
-Client registration
-The MCP spec currently requires dynamic client registration (DCR). This means that each time ChatGPT connects, it registers a fresh OAuth client with your authorization server, obtains a unique client_id, and uses that identity during token exchange. The downside of this approach is that it can generate thousands of short-lived clients—often one per user session.
-
-To address this issue, the MCP council is currently advancing **Client Metadata Documents (CMID)**. 
-
-In the CMID model, ChatGPT will publish a stable document (for example https://openai.com/chatgpt.json) that declares its OAuth metadata and identity. Your authorization server can fetch the document over HTTPS, pin it as the canonical client record, and enforce policies such as redirect URI allowlists or rate limits without relying on per-session registration. CMID is still in draft, so continue supporting DCR until CIMD has landed.
 
 ## Use Cases
 Linkedin Post: 
